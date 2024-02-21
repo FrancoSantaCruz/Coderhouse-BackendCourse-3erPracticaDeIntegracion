@@ -1,5 +1,4 @@
 import { generateAllProducts } from '../utils/faker.js';
-import {customError, ErrorMessages} from "../errors/error.js";
 import { logger } from '../utils/winston.js';
 
 export const mockingProducts = async (req, res, next) => {

@@ -1,4 +1,5 @@
 import { usersDao } from "../DAOs/MongoDB/users.dao.js";
+import { CustomError, ErrorMessages } from "../errors/error.js";
 
 export const findAll = async () => {
     const users = await usersDao.getAll();
@@ -20,9 +21,8 @@ export const createOne = async (obj) => {
     return newUser
 }
 
-export const updateOne = async (obj) => {
-    const { id, ...data } = obj;
-    const updatedUser = await usersDao.update(id, data);
+export const updateOne = async (id, obj) => {
+    const updatedUser = await usersDao.update(id, obj);
     return updatedUser;
 };
 
@@ -30,3 +30,15 @@ export const deleteOne  = async (id) => {
     const user = await usersDao.delete(id);
     return user;
 };
+
+export const updateRole = async (user) => {
+    const obj = await usersDao.getByEmail(user.email);
+    if(!obj) return await CustomError.createError(ErrorMessages.USER_NOT_FOUND, ErrorMessages.ISSUE_SESSION);
+    if(obj.role == "user"){
+        obj.role = "premium"
+    } else {
+        obj.role = "user"
+    }
+    const updatedUser = await usersDao.update(user._id, obj);
+    return obj.role;
+}

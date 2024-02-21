@@ -1,5 +1,6 @@
 import { productsDao } from "../DAOs/MongoDB/products.dao.js"
-import { customError, ErrorMessages } from "../errors/error.js";
+import { CustomError, ErrorMessages } from "../errors/error.js";
+import { logger } from "../utils/winston.js";
 
 export const findAll = async (obj) => {
     const products = await productsDao.getAllPg(obj);
@@ -8,18 +9,19 @@ export const findAll = async (obj) => {
 
 export const findById = async (id) => {
     const product = await productsDao.getById(id);
-    if (!product) return customError.createError(ErrorMessages.PRODUCT_NOT_FOUND, ErrorMessages.ISSUE_PRODUCT);
+    if (!product) return await CustomError.createError(ErrorMessages.PRODUCT_NOT_FOUND, ErrorMessages.ISSUE_PRODUCT);
     return product;
 };
 
 export const createOne = async (obj) => {
-    const { title, description, price, status, stock, category, sale, sale_percent } = obj;
+    const { title, description, price, status, stock, category, sale, sale_percent } = obj.product;
+    const { role, email } = obj.owner;
     if (!title || !description || !price || !stock || !category) {
-        return customError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_PRODUCT);
+        return await CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_PRODUCT);
     };
+    if(!obj.owner) email = "admin"
 
     const code = codeGenerator(title);
-
     const prod = {
         title: title,
         description: description,
@@ -30,17 +32,18 @@ export const createOne = async (obj) => {
         category: category,
         sale: sale ? "true" : "false",
         sale_percent: sale_percent ? sale_percent : 0,
+        owner: email,
     };
-   
+
     const newProduct = await productsDao.create(prod);
     return {newProduct};
 };
 
 export const updateOne = async (obj) => {
-    const { id, data } = obj 
+    const { id, data } = obj
     const { title, description, code, price, status, stock, category } = data;
     if (!title || !description || !code || !price || !status || !stock || !category || !id) {
-        return customError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_PRODUCT);
+        return await CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_PRODUCT);
     };
     const modifyProduct = await productsDao.update(id, { title, description, code, price, status, stock, category });
     return modifyProduct;
@@ -48,12 +51,12 @@ export const updateOne = async (obj) => {
 
 export const deleteOne = async (id) => {
     const { pid } = id;
-    if(!pid) return customError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_PRODUCT);
-    const deletedProduct = await productsDao.delete(id);
+    if (!pid) return await CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_PRODUCT);
+    const deletedProduct = await productsDao.delete(pid);
     return deletedProduct;
 };
 
-function codeGenerator(title){
+function codeGenerator(title) {
     let random_code = "";
     let random = 0;
     for (let i = 0; i < 5; i++) {

@@ -1,6 +1,6 @@
 import { ticketsDao } from "../DAOs/MongoDB/tickets.dao.js";
 import { hashData } from "../utils/utils.js";
-import { customError, ErrorMessages } from "../errors/error.js";
+import { CustomError, ErrorMessages } from "../errors/error.js";
 
 export const findAll = async () => {
     const tickets = await ticketsDao.getAll();
@@ -9,11 +9,11 @@ export const findAll = async () => {
 export const findById = async (id) => {
     const { tid } = id;
     const ticket = await ticketsDao.getById(tid);
-    if (!ticket) return customError.createError(ErrorMessages.TICKET_NOT_FOUND, ErrorMessages.ISSUE_TICKET);
+    if (!ticket) return await CustomError.createError(ErrorMessages.TICKET_NOT_FOUND, ErrorMessages.ISSUE_TICKET);
     return ticket;
 };
 export const create = async (amount, emailPurchaser) => {
-    if(!amount) return customError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_TICKET);
+    if(!amount) return await CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_TICKET);
 
     const hashEmail = await hashData(emailPurchaser);
     const currentDate = new Date();

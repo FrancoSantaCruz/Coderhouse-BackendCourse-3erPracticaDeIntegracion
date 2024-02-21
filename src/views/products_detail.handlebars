@@ -1,5 +1,4 @@
-    
-    <h1 class="fs-1 fw-bold font-monospace text-center text-info-emphasis" style="margin-top: 3rem;">PRODUCT DETAIL</h1>
+<h1 class="fs-1 fw-bold font-monospace text-center text-info-emphasis" style="margin-top: 3rem;">PRODUCT DETAIL</h1>
 <section style="display: flex; align-items:center; margin-top: 2rem; margin-bottom: 5rem;">
     <div class="container">
         <div id="carouselExampleFade" class="carousel slide carousel-fade">
@@ -52,14 +51,25 @@
                     <h5 class="card-title">{{product.title}}</h5>
                     <p class="card-text">ARS${{product.price}}</p>
                     <p class="card-text">Stock: {{product.stock}}</p>
-                    <form action="/api/carts/{{@root.user.cart._id}}/products/{{product._id}}" method="post">
-                        <button type="submit" class="btn btn-outline-dark mt-auto ms-2"><i
-                                class="bi bi-cart"> Add to cart</i></button>
+                    <form action="/api/carts/add/{{@root.user.cart._id}}/products/{{product._id}}" method="post">
+                        <button type="submit" class="btn btn-outline-dark mt-auto ms-2"><i class="bi bi-cart"> Add to
+                                cart</i></button>
                     </form>
                 </div>
                 <div class="card-footer text-body-secondary">
                     {{product.category}}
                 </div>
+                <div class="card-footer text-body-secondary">
+                    {{product.owner}}
+                </div>
             </div>
+            {{!-- {{#if (ifEquals product.owner user.email) }} --}}
+                <form action="/api/products/update/{{product._id}}" method="post">
+                <button type="submit">Edit</button>
+                </form>
+                <form action="/api/products/delete/{{product._id}}" method="post">
+                <button type="submit">Delete</button>
+                </form>
+            {{!-- {{/if}} --}}
         </div>
 </section>

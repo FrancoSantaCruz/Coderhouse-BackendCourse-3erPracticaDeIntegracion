@@ -1,4 +1,4 @@
-import { findAll, findById, findByEmail, deleteOne } from "../services/users.service.js";
+import { findAll, findById, findByEmail, deleteOne, updateRole } from "../services/users.service.js";
 
 
 export const findUsers = async (req, res) => {
@@ -37,8 +37,18 @@ export const deleteUser = async (req, res) => {
     const { uid } = req.params;
     try {
         const deletedUser = await deleteOne(uid);
-        res.status(200).json({ message: ' User removed. ', deletedUser })
+        res.status(200).json({ message: ' User removed. ', deletedUser });
     } catch (error) {
-        res.status(500).json({ error })
-    }
+        res.status(500).json({ error });
+    };
 };
+
+export const upgradeRole = async (req, res) => {
+    const requser = req.user;
+    try {
+        const newRole = await updateRole(requser)
+        res.status(200).json({ message: "User's role changed", newRole })
+    } catch (error) {
+        res.status(500).json( error.message );
+    }
+}

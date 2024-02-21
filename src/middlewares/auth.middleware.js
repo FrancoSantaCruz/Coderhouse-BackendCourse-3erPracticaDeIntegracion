@@ -1,16 +1,20 @@
+import { logger } from "../utils/winston.js";
 import { userOn } from "../controllers/sessions.controller.js";
+import { CustomError, ErrorMessages } from "../errors/error.js";
 
-export const authValidation = (role) => {
+export const authValidation = (roles) => {
     return async (req, res, next) => {
         try {
             const user = await userOn(req, res);
-            if(user.role !== role){
-                throw new Error(`Not authorized. Only for ${role}.`);
+            if(!roles.includes(user.role) && !req.user.isOwner){
+                return await CustomError.createError(ErrorMessages.USER_NOT_ALLOWED, ErrorMessages.ISSUE_SESSION);
             }
-            next();    
+            next();
         } catch (error) {
-            res.status(500).json( error.message );
+            next(error)
         }
         
     }
 }
+
+// http://localhost:8080/products/65d53faa7f360dceeea9a060

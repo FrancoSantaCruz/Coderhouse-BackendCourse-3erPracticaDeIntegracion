@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 const productsSchema = new Schema({
@@ -43,6 +43,10 @@ const productsSchema = new Schema({
     thumbnails: {
         type: [],
         default: []
+    },
+    owner: {
+        type: String,
+        default: "admin"
     }
 });
 

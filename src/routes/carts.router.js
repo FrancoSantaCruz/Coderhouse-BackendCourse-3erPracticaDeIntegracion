@@ -11,13 +11,13 @@ router.post('/', newCart);
 router.post('/clear/:cid', clearCart);
 
 // Add one product to cart.
-router.post('/add/:cid/products/:pid', authValidation("user"),  addProdToCart);
+router.post('/add/:cid/products/:pid', authValidation(["user", "premium", "admin"]),  addProdToCart);
 
 // Remove one product from cart.
-router.put('/update/:cid/products/:pid', authValidation("user"), removeProdFromCart);
+router.put('/update/:cid/products/:pid', authValidation(["user", "premium", "admin"]), removeProdFromCart);
 
 // Buy cart
-router.post('/:cid/purchase', authValidation("user"), buyCart);
+router.post('/:cid/purchase', authValidation(["user", "premium", "admin"]), buyCart);
 
 
 export default router;

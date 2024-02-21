@@ -9,5 +9,6 @@ export default {
     google_client_secret: process.env.GOOGLE_CLIENT_SECRET,
     google_callbackURL: process.env.GOOGLE_callbackURL,
     session_secret: process.env.SESSION_SECRET,
-    jwt_secret: process.env.JWT_SECRET,
+    nodemailer_gmail_user: process.env.NODEMAILER_GMAIL_USER,
+    nodemailer_gmail_password: process.env.NODEMAILER_GMAIL_PASSWORD,
 }

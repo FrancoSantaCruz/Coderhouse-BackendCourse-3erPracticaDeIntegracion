@@ -1,6 +1,4 @@
 import { findAll, findById, createOne, deleteOne, updateOne } from '../services/products.service.js'
-import {customError, ErrorMessages} from "../errors/error.js";
-
 
 export const findProducts = async (req, res, next) => {
     try {
@@ -23,7 +21,8 @@ export const findProductById = async (req, res, next) => {
 
 export const newProduct = async (req, res, next) => {
     try {
-        const { newProduct } = await createOne(req.body);
+        const data = { product: req.body, owner: req.user }
+        const { newProduct } = await createOne(data);
         res.status(200).json({ message: 'Product created', newProduct })
     } catch (error) {
         next(error)

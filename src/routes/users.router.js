@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { findUsers, findUserById, findUserByEmail, deleteUser } from "../controllers/users.controller.js";
+import { findUsers, findUserById, findUserByEmail, deleteUser, upgradeRole } from "../controllers/users.controller.js";
 
 const router = Router();
 
@@ -10,6 +10,8 @@ router.get('/', findUsers);
 router.get('/:email', findUserByEmail);
 
 router.delete('/delete/:uid', deleteUser);
+
+router.post('/premium/:uid', upgradeRole);
 
 export default router;
 

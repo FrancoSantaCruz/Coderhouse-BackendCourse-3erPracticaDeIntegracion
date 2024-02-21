@@ -1,5 +1,3 @@
-import {customError, ErrorMessages} from "../errors/error.js";
-
 import {
     findAll as findAllMsg,
     findByField as findByFieldMsg,
@@ -31,10 +29,26 @@ export const loginView = async (req, res) => {
     res.render('login')
 };
 
-export const signupView = async (req, res, next) => {
+export const signupView = async (req, res) => {
     res.render("signup");
 };
 
+export const resetMessage = async (req, res) => {
+    try {
+        res.render("restore_message");
+    } catch (error) {
+        res.status(500).json(error.message)
+    }
+};
+
+export const resetPassword = async (req, res) => {
+    try {
+        let ctx = { uid : req.query.uid }
+        res.render("restore_password", ctx);
+    } catch (error) {
+        res.status(500).json(error.message)
+    }
+};
 
 // CHATS VIEWS
 export const allChatsView = async (req, res) => {

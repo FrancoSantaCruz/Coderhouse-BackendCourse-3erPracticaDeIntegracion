@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { customError, ErrorMessages } from "../errors/error.js";
+import { CustomError, ErrorMessages } from "../errors/error.js";
 
 import {
     findById,
@@ -32,7 +32,8 @@ export const newCart = async (req, res, next) => {
 
 export const addProdToCart = async (req, res, next) => {
     try {
-        const { cart } = addProd(req.params)
+        const { cid, pid } = req.params
+        const { cart } = await addProd({ cid, pid , user: req.user})
         res.status(200).redirect('back')
         // res.status(200).json({message: 'Product added.', cart})
     } catch (error) {
@@ -61,9 +62,8 @@ export const clearCart = async (req, res, next) => {
 };
 
 export const buyCart = async (req, res, next) => {
-    const user = req.user;
     try {
-        if (!req.user) return customError.createError(ErrorMessages.USER_NOT_LOGGED, ErrorMessages.ISSUE_SESSION);
+        if (!req.user) return await CustomError.createError(ErrorMessages.USER_NOT_LOGGED, ErrorMessages.ISSUE_SESSION);
         const user = req.user;
         const { cart_aux, ticket } = buy(user)
         res.status(200).json({ message: "Bought complete!", "Unprocessed Products": cart_aux, ticket });

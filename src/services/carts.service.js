@@ -1,7 +1,8 @@
 import { cartsDao } from "../DAOs/MongoDB/carts.dao.js";
 import { productsDao } from "../DAOs/MongoDB/products.dao.js";
 import { ticketsDao } from "../DAOs/MongoDB/tickets.dao.js";
-import { customError, ErrorMessages } from "../errors/error.js";
+import { CustomError, ErrorMessages } from "../errors/error.js";
+import { logger } from "../utils/winston.js";
 
 export const findAll = async (obj) => {
     const carts = await cartsDao.getAll();
@@ -10,9 +11,9 @@ export const findAll = async (obj) => {
 
 export const findById = async (id) => {
     const { cid } = id
-    if(!cid) return customError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_CART);
+    if(!cid) return await CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_CART);
     const cart = await cartsDao.getById(id);
-    if(!cart) return customError.createError(ErrorMessages.CART_NOT_FOUND, ErrorMessages.ISSUE_CART);
+    if(!cart) return await CustomError.createError(ErrorMessages.CART_NOT_FOUND, ErrorMessages.ISSUE_CART);
     return cart;
 };
 
@@ -33,11 +34,15 @@ export const deleteOne = async (id) => {
 
 export const addProd = async (obj) => {
     const { cid, pid } = obj;
+    const { email } = obj.user;
+
     const cart = await cartsDao.getById(cid)
-    if (!cart) return customError.createError(ErrorMessages.CART_NOT_FOUND, ErrorMessages.ISSUE_CART);
+    if (!cart) return await CustomError.createError(ErrorMessages.CART_NOT_FOUND, ErrorMessages.ISSUE_CART);
 
     const product = await productsDao.getById(pid);
-    if (!product) return customError.createError(ErrorMessages.PRODUCT_NOT_FOUND, ErrorMessages.ISSUE_PRODUCT);
+    if (!product) return await CustomError.createError(ErrorMessages.PRODUCT_NOT_FOUND, ErrorMessages.ISSUE_PRODUCT);
+    
+    if(product.owner === email) return await CustomError.createError(ErrorMessages.CANT_ADD_OWN_PROD, ErrorMessages.ISSUE_PRODUCT);
 
     const prod_idx = cart.products.findIndex((prod) => prod.product._id.equals(pid));
     // Como prod.product son tipo de datos ObjectId de mongoose
@@ -56,14 +61,14 @@ export const addProd = async (obj) => {
 export const removeProd = async (obj) => {
     const { cid, pid } = obj;
     const cart = await cartsDao.getById(cid);
-    if (!cart) return customError.createError(ErrorMessages.CART_NOT_FOUND, ErrorMessages.ISSUE_CART);
+    if (!cart) return await CustomError.createError(ErrorMessages.CART_NOT_FOUND, ErrorMessages.ISSUE_CART);
 
     const product = await productsDao.getById(pid);
-    if (!product) return customError.createError(ErrorMessages.PRODUCT_NOT_FOUND, ErrorMessages.ISSUE_PRODUCT);
+    if (!product) return await CustomError.createError(ErrorMessages.PRODUCT_NOT_FOUND, ErrorMessages.ISSUE_PRODUCT);
 
     const idx = cart.products.findIndex((p) => p.product._id.equals(pid));
     if (idx === -1) {
-        return customError.createError(ErrorMessages.PRODUCT_NOT_IN_CART, ErrorMessages.ISSUE_PRODUCT);
+        return await CustomError.createError(ErrorMessages.PRODUCT_NOT_IN_CART, ErrorMessages.ISSUE_PRODUCT);
     } else {
         cart.products[idx].quantity--
         if (cart.products[idx].quantity <= 0) {
@@ -86,8 +91,8 @@ export const buy = async (user) => {
         let cart_total = 0;
         let cart_aux = [];
 
-        if (!cart) return customError.createError(ErrorMessages.CART_NOT_FOUND, ErrorMessages.ISSUE_CART);
-        if (!user) return customError.createError(ErrorMessages.USER_NOT_LOGGED, ErrorMessages.ISSUE_SESSION);
+        if (!cart) return await CustomError.createError(ErrorMessages.CART_NOT_FOUND, ErrorMessages.ISSUE_CART);
+        if (!user) return await CustomError.createError(ErrorMessages.USER_NOT_LOGGED, ErrorMessages.ISSUE_SESSION);
 
         for (let i = 0; i < cart.length; i++) {
             let prodDB = await productsDao.getById(cart[i].product._id);
