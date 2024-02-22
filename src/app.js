@@ -15,13 +15,15 @@ import config from "./config/config.js";
 //Utils
 import "./utils/passport.js";
 import { logger } from "./utils/winston.js";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+import { __dirname } from "./utils/utils.js";
 
 // Middlewares
 import cors from 'cors'
 import { cartInformation } from "./middlewares/cart.middleware.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
+import { swaggerSetup } from "./utils/swaggerSpecs.js";
+import swaggerUi from "swagger-ui-express";
+
 
 // Routes
 import viewsRouter from "./routes/views.router.js";
@@ -38,7 +40,6 @@ import { findById, updateOne, findByField } from "./services/messages.service.js
 
 
 const app = express();
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
@@ -83,6 +84,7 @@ app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/tickets", ticketsRouter);
 app.use("/api/test", testRouter);
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSetup));
 
 app.use(errorMiddleware)
 

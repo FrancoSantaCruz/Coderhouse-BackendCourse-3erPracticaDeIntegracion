@@ -8,13 +8,13 @@ router.get('/:cid', findCart);
 
 router.post('/', newCart);
 
-router.post('/clear/:cid', clearCart);
+router.put('/clear/:cid', clearCart);
 
 // Add one product to cart.
-router.post('/add/:cid/products/:pid', authValidation(["user", "premium", "admin"]),  addProdToCart);
+router.put('/add/:cid/products/:pid', authValidation(["user", "premium", "admin"]),  addProdToCart);
 
 // Remove one product from cart.
-router.put('/update/:cid/products/:pid', authValidation(["user", "premium", "admin"]), removeProdFromCart);
+router.put('/remove/:cid/products/:pid', authValidation(["user", "premium", "admin"]), removeProdFromCart);
 
 // Buy cart
 router.post('/:cid/purchase', authValidation(["user", "premium", "admin"]), buyCart);
