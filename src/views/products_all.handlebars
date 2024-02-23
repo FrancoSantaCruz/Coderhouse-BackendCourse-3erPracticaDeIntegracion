@@ -191,7 +191,7 @@
                             </form>
 
                             {{#if (ifEquals @root.user.role "admin") }}
-                            <form  data-product="{{this._id}}" id="deleteForm">
+                            <form action="api/products/delete/{{this._id}}" id="deleteForm" method="post">
                                 <button type="submit" class="btn btn-outline-dark mt-auto ms-2" id="delete_btn"><i
                                         class="bi bi-trash"></i></button>
                             </form>
