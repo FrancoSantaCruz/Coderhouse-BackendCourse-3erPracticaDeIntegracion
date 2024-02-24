@@ -1,20 +1,19 @@
-import passport from "passport";
 import { findById, findByEmail, updateOne } from "../services/users.service.js";
 import { transporter } from "../utils/nodemailer.js";
-import UsersDTO from "../DTOs/users.dto.js";
-import config from "../config/config.js";
 import { ErrorMessages, CustomError } from "../errors/error.js";
-import { hashData, compareData } from "../utils/utils.js"
+import { hashData, compareData } from "../utils/utils.js";
+import passport from "passport";
+import config from "../config/config.js";
+import jwt from "jsonwebtoken";
 
-export const userOn = async (req, res, next) => {
+export const current = async (req, res) => {
     try {
-        const requser = req.user;
-        if (!requser) throw CustomError.createError(ErrorMessages.USER_NOT_LOGGED, ErrorMessages.ISSUE_SESSION, 401);
-        const user = await findById(requser._id);
-        const userOn = new UsersDTO(user)
-        res.status(200).send({message:"User on", userOn});
+        const cookie = req.cookies['token']
+        const user = jwt.verify(cookie, config.jwt_secret);
+        if (user)
+            return res.status(200).send({ message: "success", user });
     } catch (error) {
-        res.status(error.status).send({ Type: error.name, Error: error.message })
+        res.status(500).send({ Type: error.name, Error: error.message })
     }
 }
 
@@ -73,16 +72,11 @@ export const signup = passport.authenticate('signup',
     }
 )
 
-export const login = passport.authenticate('login',
-    {
-        successRedirect: '/',
-        failureRedirect: '/login',
-        failureMessage: "Invalid credentials"
-    }
-)
+export const login = passport.authenticate('login')
 
 export const logout = (req, res) => {
     req.session.destroy(() => {
+        res.clearCookie('token');
         res.redirect('/')
     })
 }

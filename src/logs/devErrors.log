@@ -188,3 +188,18 @@
   level: 'warning',
   timestamp: '2024-02-21T04:26:16.856Z'
 }
+{
+  message: 'Logger critical.',
+  level: 'critical',
+  timestamp: '2024-02-24T03:45:33.522Z'
+}
+{
+  message: 'Logger error.',
+  level: 'error',
+  timestamp: '2024-02-24T03:45:33.523Z'
+}
+{
+  message: 'Logger warning.',
+  level: 'warning',
+  timestamp: '2024-02-24T03:45:33.524Z'
+}

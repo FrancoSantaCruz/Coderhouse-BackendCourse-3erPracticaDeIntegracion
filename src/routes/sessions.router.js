@@ -1,14 +1,14 @@
 import { Router } from "express";
-import { userOn, signup, login, logout, googleAuth, googleAuthCb, restoreMail, restorePassword } from "../controllers/sessions.controller.js";
-
+import { current, signup, login, logout, googleAuth, googleAuthCb, restoreMail, restorePassword } from "../controllers/sessions.controller.js";
+import { setTokenCookie } from "../middlewares/tokenCookie.middleware.js";
 
 const router = Router();
 
-router.get('/current', userOn);
+router.get('/current', current);
 
 router.post('/signup', signup);
 
-router.post('/login', login);
+router.post('/login', login, setTokenCookie);
 
 router.get('/logout', logout);
 

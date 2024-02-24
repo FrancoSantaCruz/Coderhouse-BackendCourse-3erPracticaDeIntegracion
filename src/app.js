@@ -74,7 +74,7 @@ app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
 // Middlewares Globales
-app.use(cartInformation())
+// app.use(cartInformation())
 
 // routes
 app.use("/", viewsRouter);

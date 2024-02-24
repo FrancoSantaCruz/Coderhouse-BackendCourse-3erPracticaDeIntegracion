@@ -12,7 +12,7 @@ export const mockingProducts = async (req, res, next) => {
 
 export const loggerTest = async (req, res, next) => {
     try {
-        logger.fatal("Logger fatal.");
+        logger.critical("Logger critical.");
         logger.error("Logger error.");
         logger.warning("Logger warning.");
         logger.info("Logger info.");
@@ -21,6 +21,6 @@ export const loggerTest = async (req, res, next) => {
         
         res.send("Probando los custom loggers de winston 🤠")
     } catch (error) {
-        res.status(error.status).send({ Type: error.name, Error: error.message })
+        res.status(500).send({ Type: error.name, Error: error.message })
     }
 }

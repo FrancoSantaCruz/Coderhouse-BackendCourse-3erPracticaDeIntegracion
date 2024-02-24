@@ -11,4 +11,5 @@ export default {
     session_secret: process.env.SESSION_SECRET,
     nodemailer_gmail_user: process.env.NODEMAILER_GMAIL_USER,
     nodemailer_gmail_password: process.env.NODEMAILER_GMAIL_PASSWORD,
+    jwt_secret: process.env.JWT_SECRET,
 }

@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as LocalStrategy } from 'passport-local';
+import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 
 import { findByEmail, createOne as createUser, findById } from "../services/users.service.js";
 import { createOne as createCart } from "../services/carts.service.js";
@@ -8,6 +9,7 @@ import { createOne as createCart } from "../services/carts.service.js";
 
 import { hashData, compareData } from './utils.js';
 import config from '../config/config.js'
+import { generateToken } from './utils.js';
 
 passport.use('google', new GoogleStrategy(
     {
@@ -18,8 +20,8 @@ passport.use('google', new GoogleStrategy(
     async (accessToken, refreshToken, profile, done) => {
         try {
             const user = await findByEmail(profile._json.email)
-            if(user){
-                if(user.fromGoogle){
+            if (user) {
+                if (user.fromGoogle) {
                     return done(null, user)
                 } else {
                     return done(null, false)
@@ -32,7 +34,7 @@ passport.use('google', new GoogleStrategy(
                 email: profile._json.email,
                 password: ' ',
                 fromGoogle: true,
-                fromGithub: false, 
+                fromGithub: false,
                 cart: newCart._id
             }
             const createdUser = await createUser(newUser);
@@ -69,21 +71,43 @@ passport.use('login', new LocalStrategy(
             const userDB = await findByEmail(email);
             if (!userDB) {
                 return done(null, false);
-            }
+            };
             const isValid = await compareData(password, userDB.password);
             if (!isValid) {
                 return done(null, false);
-            }
-            done(null, userDB)
+            };
+            const token = generateToken({
+                first_name: userDB.first_name,
+                last_name: userDB.last_name,
+                email: userDB.email,
+                cart: userDB.cart,
+                role: userDB.role
+            });
+            done(null, { user: userDB, token: token });
         } catch (error) {
-            done(error)
+            done(error);
         }
     }
 ))
 
+const fromCookies = (req) => {
+    return req.cookies.token;
+}
+
+passport.use("jwt",
+    new JwtStrategy(
+        {
+            secretOrKey: config.jwt_secret,
+            jwtFromRequest: ExtractJwt.fromExtractors([fromCookies])
+        },
+        async (jwt_payload, done) => {
+            done(null, jwt_payload)
+        }
+    )
+)
 
 passport.serializeUser((user, done) => {
-    done(null, user._id);
+    done(null, user.user._id);
 })
 
 passport.deserializeUser(async (id, done) => {

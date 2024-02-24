@@ -1,10 +1,10 @@
-import { userOn } from "../controllers/sessions.controller.js";
+// import { userOn } from "../controllers/sessions.controller.js";
 
 export const cartInformation = () => {
     return async (req, res, next) => {
         try {
             if (req.user) {
-                let user = await userOn(req, res);
+                // let user = await userOn(req, res);
                 let cart_total = 0;
 
                 user.cart.products.forEach((prod) => {
