@@ -11,7 +11,7 @@ router.get('/:email', findUserByEmail);
 
 router.delete('/delete/:uid', deleteUser);
 
-router.post('/premium/:uid', upgradeRole);
+router.put('/premium/:uid', upgradeRole);
 
 export default router;
 

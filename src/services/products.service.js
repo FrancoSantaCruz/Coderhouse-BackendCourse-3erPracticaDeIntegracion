@@ -9,7 +9,7 @@ export const findAll = async (obj) => {
 
 export const findById = async (id) => {
     const product = await productsDao.getById(id);
-    if (!product) return await CustomError.createError(ErrorMessages.PRODUCT_NOT_FOUND, ErrorMessages.ISSUE_PRODUCT);
+    if (!product) throw CustomError.createError(ErrorMessages.PRODUCT_NOT_FOUND, ErrorMessages.ISSUE_PRODUCT, 404);
     return product;
 };
 
@@ -17,7 +17,7 @@ export const createOne = async (obj) => {
     const { title, description, price, status, stock, category, sale, sale_percent } = obj.product;
     const { role, email } = obj.owner;
     if (!title || !description || !price || !stock || !category) {
-        return await CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_PRODUCT);
+        throw CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_PRODUCT, 400);
     };
     if(!obj.owner) email = "admin"
 
@@ -43,7 +43,7 @@ export const updateOne = async (obj) => {
     const { id, data } = obj
     const { title, description, code, price, status, stock, category } = data;
     if (!title || !description || !code || !price || !status || !stock || !category || !id) {
-        return await CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_PRODUCT);
+        throw CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_PRODUCT, 400);
     };
     const modifyProduct = await productsDao.update(id, { title, description, code, price, status, stock, category });
     return modifyProduct;
@@ -51,7 +51,7 @@ export const updateOne = async (obj) => {
 
 export const deleteOne = async (id) => {
     const { pid } = id;
-    if (!pid) return await CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_PRODUCT);
+    if (!pid) throw CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_PRODUCT, 400);
     const deletedProduct = await productsDao.delete(pid);
     return deletedProduct;
 };

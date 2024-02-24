@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { findCart, newCart, addProdToCart, removeProdFromCart, buyCart, clearCart } from "../controllers/carts.controller.js";
+import { findAllCarts, findCart, newCart, addProdToCart, removeProdFromCart, buyCart, clearCart, deleteCart } from "../controllers/carts.controller.js";
 import { authValidation } from "../middlewares/auth.middleware.js";
 
 const router = Router();
+
+router.get('/', findAllCarts)
 
 router.get('/:cid', findCart);
 
@@ -15,6 +17,8 @@ router.put('/add/:cid/products/:pid', authValidation(["user", "premium", "admin"
 
 // Remove one product from cart.
 router.put('/remove/:cid/products/:pid', authValidation(["user", "premium", "admin"]), removeProdFromCart);
+
+router.delete('/delete/:cid', deleteCart);
 
 // Buy cart
 router.post('/:cid/purchase', authValidation(["user", "premium", "admin"]), buyCart);

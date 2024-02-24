@@ -7,19 +7,22 @@ import { ErrorMessages, CustomError } from "../errors/error.js";
 import { hashData, compareData } from "../utils/utils.js"
 
 export const userOn = async (req, res, next) => {
-    const requser = req.user;
-    if (!requser) return await CustomError.createError(ErrorMessages.USER_NOT_LOGGED, ErrorMessages.ISSUE_SESSION);
-    const user = await findById(requser._id);
-    const userOn = new UsersDTO(user)
-    return userOn;
-
+    try {
+        const requser = req.user;
+        if (!requser) throw CustomError.createError(ErrorMessages.USER_NOT_LOGGED, ErrorMessages.ISSUE_SESSION, 401);
+        const user = await findById(requser._id);
+        const userOn = new UsersDTO(user)
+        res.status(200).send({message:"User on", userOn});
+    } catch (error) {
+        res.status(error.status).send({ Type: error.name, Error: error.message })
+    }
 }
 
 export const restoreMail = async (req, res, next) => {
     try {
         const { email } = req.body;
         const user = await findByEmail(email);
-        if (!user) return await CustomError.createError(ErrorMessages.USER_NOT_FOUND, ErrorMessages.ISSUE_SESSION);
+        if (!user) throw CustomError.createError(ErrorMessages.USER_NOT_FOUND, ErrorMessages.ISSUE_SESSION, 404);
         transporter.sendMail({
             from: config.gmail_user,
             to: email,
@@ -33,7 +36,7 @@ export const restoreMail = async (req, res, next) => {
         });
         res.status(200).json({ message: "Email sent", to: email })
     } catch (error) {
-        next(error)
+        res.status(error.status).send({ Type: error.name, Error: error.message })
     }
 };
 
@@ -42,24 +45,24 @@ export const restorePassword = async (req, res, next) => {
     const { passwordA, passwordB } = req.body;
     try {
         if (!uid || !passwordA || !passwordB) {
-            return await CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_SESSION);
+            throw CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_SESSION, 400);
         }
         let user = await findById(uid);
-        if (!user) return await CustomError.createError(ErrorMessages.USER_NOT_FOUND, ErrorMessages.ISSUE_SESSION);
+        if (!user) throw CustomError.createError(ErrorMessages.USER_NOT_FOUND, ErrorMessages.ISSUE_SESSION, 404);
 
         if (passwordA !== passwordB) {
-            return await CustomError.createError(ErrorMessages.PASSWORDS_UNMATCH, ErrorMessages.ISSUE_SESSION);
+            throw CustomError.createError(ErrorMessages.PASSWORDS_UNMATCH, ErrorMessages.ISSUE_SESSION, 400);
         }
 
         const isValid = await compareData(passwordA, user.password);
-        if (isValid) return await CustomError.createError(ErrorMessages.SAME_OLDPASS, ErrorMessages.ISSUE_SESSION);
+        if (isValid) throw CustomError.createError(ErrorMessages.SAME_OLDPASS, ErrorMessages.ISSUE_SESSION, 400);
 
         const newPassword = await hashData(passwordA);
 
-        const result = await updateOne(user._id, {password: newPassword})
+        const result = await updateOne(user._id, { password: newPassword })
         res.status(200).json({ message: "Password restored.", result })
     } catch (error) {
-        next(error)
+        res.status(error.status).send({ Type: error.name, Error: error.message })
     }
 }
 

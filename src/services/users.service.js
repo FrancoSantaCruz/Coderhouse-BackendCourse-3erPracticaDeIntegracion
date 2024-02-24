@@ -33,7 +33,7 @@ export const deleteOne  = async (id) => {
 
 export const updateRole = async (user) => {
     const obj = await usersDao.getByEmail(user.email);
-    if(!obj) return await CustomError.createError(ErrorMessages.USER_NOT_FOUND, ErrorMessages.ISSUE_SESSION);
+    if(!obj) throw CustomError.createError(ErrorMessages.USER_NOT_FOUND, ErrorMessages.ISSUE_SESSION);
     if(obj.role == "user"){
         obj.role = "premium"
     } else {

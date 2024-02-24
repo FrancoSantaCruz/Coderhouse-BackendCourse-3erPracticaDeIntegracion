@@ -7,7 +7,7 @@ export const authValidation = (roles) => {
         try {
             const user = await userOn(req, res);
             if(!roles.includes(user.role) && !req.user.isOwner){
-                return await CustomError.createError(ErrorMessages.USER_NOT_ALLOWED, ErrorMessages.ISSUE_SESSION);
+                throw CustomError.createError(ErrorMessages.USER_NOT_ALLOWED, ErrorMessages.ISSUE_SESSION, 400);
             }
             next();
         } catch (error) {

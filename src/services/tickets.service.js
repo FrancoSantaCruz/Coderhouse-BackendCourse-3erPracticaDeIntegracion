@@ -9,11 +9,11 @@ export const findAll = async () => {
 export const findById = async (id) => {
     const { tid } = id;
     const ticket = await ticketsDao.getById(tid);
-    if (!ticket) return await CustomError.createError(ErrorMessages.TICKET_NOT_FOUND, ErrorMessages.ISSUE_TICKET);
+    if (!ticket) throw CustomError.createError(ErrorMessages.TICKET_NOT_FOUND, ErrorMessages.ISSUE_TICKET, 404);
     return ticket;
 };
 export const create = async (amount, emailPurchaser) => {
-    if(!amount) return await CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_TICKET);
+    if(!amount) throw CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_TICKET, 400);
 
     const hashEmail = await hashData(emailPurchaser);
     const currentDate = new Date();

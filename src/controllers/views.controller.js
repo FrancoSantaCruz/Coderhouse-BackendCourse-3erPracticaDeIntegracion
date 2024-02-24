@@ -20,7 +20,7 @@ export const homeView = async (req, res) => {
         }
         res.render('home', ctx)
     } catch (error) {
-        res.status(500).json(error.message)
+        res.status(error.status).send({ Type: error.name, Error: error.message })
     }
 };
 
@@ -37,7 +37,7 @@ export const resetMessage = async (req, res) => {
     try {
         res.render("restore_message");
     } catch (error) {
-        res.status(500).json(error.message)
+        res.status(error.status).send({ Type: error.name, Error: error.message })
     }
 };
 
@@ -46,7 +46,7 @@ export const resetPassword = async (req, res) => {
         let ctx = { uid : req.query.uid }
         res.render("restore_password", ctx);
     } catch (error) {
-        res.status(500).json(error.message)
+        res.status(error.status).send({ Type: error.name, Error: error.message })
     }
 };
 
@@ -62,7 +62,7 @@ export const allChatsView = async (req, res) => {
         }
         res.render('allChats', ctx);
     } catch (error) {
-        res.status(500).json(error.message)
+        res.status(error.status).send({ Type: error.name, Error: error.message })
     }
 };
 
@@ -76,7 +76,7 @@ export const newChat = async (req, res) => {
         const chats = await createMsg({ chats: [], title: chatTitle })
         res.redirect('/chats')
     } catch (error) {
-        res.status(500).json(error.message)
+        res.status(error.status).send({ Type: error.name, Error: error.message })
     }
 };
 
@@ -111,7 +111,7 @@ export const allProductsView = async (req, res) => {
 
         res.render('products_all', ctx)
     } catch (error) {
-        res.status(500).json(error.message)
+        res.status(error.status).send({ Type: error.name, Error: error.message })
     }
 };
 
@@ -130,7 +130,7 @@ export const productDetailsView = async (req, res) => {
 
         res.render('products_detail', ctx)
     } catch (error) {
-        res.status(500).json(error.message)
+        res.status(error.status).send({ Type: error.name, Error: error.message })
     }
 };
 

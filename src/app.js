@@ -86,7 +86,7 @@ app.use("/api/tickets", ticketsRouter);
 app.use("/api/test", testRouter);
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSetup));
 
-app.use(errorMiddleware)
+// app.use(errorMiddleware)
 
 const httpServer = app.listen(8080, () => {
     logger.info("Server is running on port 8080. -> http://localhost:8080/");

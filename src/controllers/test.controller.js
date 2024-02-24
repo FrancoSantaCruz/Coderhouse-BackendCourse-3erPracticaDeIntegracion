@@ -6,7 +6,7 @@ export const mockingProducts = async (req, res, next) => {
         const products = generateAllProducts(100);
         res.status(200).json({ message: "Fake products generated.", products });
     } catch (error) {
-        next(error)
+        res.status(error.status).send({ Type: error.name, Error: error.message })
     }
 }
 
@@ -21,6 +21,6 @@ export const loggerTest = async (req, res, next) => {
         
         res.send("Probando los custom loggers de winston 🤠")
     } catch (error) {
-        next(error)
+        res.status(error.status).send({ Type: error.name, Error: error.message })
     }
 }

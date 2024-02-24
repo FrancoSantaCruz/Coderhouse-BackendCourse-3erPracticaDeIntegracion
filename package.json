@@ -6,7 +6,10 @@
     "type": "module",
     "scripts": {
         "start": "node src/app.js",
-        "dev": "nodemon src/app.js"
+        "dev": "nodemon src/app.js",
+        "test-cart": "mocha -t 10000 test/carts.test.js",
+        "test-products": "mocha -t 10000 test/products.test.js",
+        "test-sessions": "mocha -t 10000 test/sessions.test.js"
     },
     "keywords": [],
     "author": "",
@@ -24,7 +27,6 @@
         "mongoose": "^7.6.0",
         "mongoose-paginate-v2": "^1.7.4",
         "nodemailer": "^6.9.9",
-        "nodemon": "^3.0.2",
         "passport": "^0.6.0",
         "passport-github2": "^0.1.12",
         "passport-google-oauth20": "^2.0.0",
@@ -34,6 +36,12 @@
         "swagger-jsdoc": "^6.2.8",
         "swagger-ui-express": "^5.0.0",
         "winston": "^3.11.0"
+    },
+    "devDependencies": {
+      "chai": "^4.3.7",
+      "mocha": "^10.1.0",
+      "supertest": "^6.3.3",
+      "nodemon": "^3.0.2"
     },
     "license": "ISC"
 }

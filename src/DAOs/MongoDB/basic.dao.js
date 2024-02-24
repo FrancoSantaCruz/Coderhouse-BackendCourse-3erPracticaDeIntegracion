@@ -9,11 +9,13 @@ export default class Manager {
     }
 
     async getById(id) {
+        // const result = await this.model.findById(id).populate(this.populate).lean();
+        // return result;
         return this.model.findById(id).populate(this.populate).lean();
     }
 
     async create(data) {
-        return this.model.create(data);
+        return await this.model.create(data);
     }
 
     async update(id, data){
