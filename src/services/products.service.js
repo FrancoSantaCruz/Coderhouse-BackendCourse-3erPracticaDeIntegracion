@@ -15,14 +15,13 @@ export const findById = async (id) => {
 
 export const createOne = async (obj) => {
     const { title, description, price, status, stock, category, sale, sale_percent } = obj.product;
-    const { role, email } = obj.owner;
-    if (!title || !description || !price || !stock || !category) {
+    if (!title || !description || !price || !stock || !category ) {
         throw CustomError.createError(ErrorMessages.MISSING_DATA, ErrorMessages.ISSUE_PRODUCT, 400);
     };
-    if(!obj.owner) email = "admin"
 
     const code = codeGenerator(title);
-    const prod = {
+
+    let prod = {
         title: title,
         description: description,
         code: code,
@@ -32,8 +31,12 @@ export const createOne = async (obj) => {
         category: category,
         sale: sale ? "true" : "false",
         sale_percent: sale_percent ? sale_percent : 0,
-        owner: email,
     };
+
+    if(obj.owner) {
+        const { role, email } = obj.owner;
+        prod = { ...prod, owner: email}
+    } 
 
     const newProduct = await productsDao.create(prod);
     return {newProduct};

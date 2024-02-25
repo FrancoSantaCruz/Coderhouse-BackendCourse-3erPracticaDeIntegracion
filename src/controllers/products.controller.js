@@ -1,6 +1,6 @@
 import { findAll, findById, createOne, deleteOne, updateOne } from '../services/products.service.js'
 
-export const findProducts = async (req, res, next) => {
+export const findProducts = async (req, res) => {
     try {
         const products = await findAll(req.query);
         res.status(200).send({ message: 'Products founded', products })
@@ -9,7 +9,7 @@ export const findProducts = async (req, res, next) => {
     }
 };
 
-export const findProductById = async (req, res, next) => {
+export const findProductById = async (req, res) => {
     const { pid } = req.params
     try {
         const product = await findById(pid)
@@ -19,13 +19,14 @@ export const findProductById = async (req, res, next) => {
     }
 };
 
-export const newProduct = async (req, res, next) => {
+export const newProduct = async (req, res) => {
     try {
         const data = { product: req.body, owner: req.user }
         const { newProduct } = await createOne(data);
         res.status(200).send({ message: 'Product created', newProduct })
     } catch (error) {
-        res.status(error.status).send({ Type: error.name, Error: error.message })
+        if(error.status) res.status(error.status).send({ Type: error.name, Error: error.message })
+        res.status(500).send({ Type: error.name, Error: error.message })
     }
 };
 
@@ -39,7 +40,7 @@ export const updateProduct = async (req, res) => {
     }
 }
 
-export const deleteProduct = async (req, res, next) => {
+export const deleteProduct = async (req, res) => {
     try {
         const product = await deleteOne(req.params)
         res.status(200).send({ message: 'Product deleted', product })

@@ -16,11 +16,11 @@ router.get('/resetmessage', resetMessage);
 router.get('/resetpassword', resetPassword);
 
 // CHATS VIEWS
-router.get("/chats", authValidation("user"), allChatsView);
+router.get("/chats", authValidation(["user", "premium", "admin"]), allChatsView);
 
-router.post("/chats/new", authValidation("user"), newChat);
+router.post("/chats/new", authValidation(["user", "premium", "admin"]), newChat);
 
-router.get("/chat/:cid", authValidation("user"), chatView);
+router.get("/chat/:cid", authValidation(["user", "premium", "admin"]), chatView);
 
 // PRODUCTS VIEW
 // All products

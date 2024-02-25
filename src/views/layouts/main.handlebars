@@ -146,7 +146,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each cart}}
+                    {{#each cart.products}}
                     <tr>
                         <th scope="row">{{this.product.title}}</th>
                         <td>{{this.quantity}}</td>
@@ -172,10 +172,11 @@
                         <td></td>
                         <td></td>
                         <th scope="row">Total:</th>
-                        <td>${{cart.cart_total}}</td>
+                        <td>${{cart.products.total}}</td>
                     </tr>
                 </tbody>
             </table>
+            {{@root.user.cart.total}}
             <form action="/api/carts/{{user.cart._id}}/purchase" method="post">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button type="submit" class="btn btn-success" >Finalizar compra</button>

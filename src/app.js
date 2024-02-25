@@ -51,7 +51,7 @@ app.use(
             mongoUrl: config.mongo_uri,
         }),
         secret: config.session_secret,
-        cookie: { maxAge: 60000*5 },
+        cookie: { maxAge: 240000 },
     })
 );
 
@@ -74,7 +74,7 @@ app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
 // Middlewares Globales
-// app.use(cartInformation())
+app.use(cartInformation())
 
 // routes
 app.use("/", viewsRouter);

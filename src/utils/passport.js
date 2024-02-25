@@ -83,7 +83,8 @@ passport.use('login', new LocalStrategy(
                 cart: userDB.cart,
                 role: userDB.role
             });
-            done(null, { user: userDB, token: token });
+            userDB.token = token
+            done(null, userDB);
         } catch (error) {
             done(error);
         }
@@ -107,7 +108,7 @@ passport.use("jwt",
 )
 
 passport.serializeUser((user, done) => {
-    done(null, user.user._id);
+    done(null, user._id);
 })
 
 passport.deserializeUser(async (id, done) => {

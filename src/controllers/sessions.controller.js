@@ -68,7 +68,7 @@ export const restorePassword = async (req, res, next) => {
 export const signup = passport.authenticate('signup',
     {
         successRedirect: '/',
-        failureRedirect: '/error'
+        failureMessage: true
     }
 )
 
@@ -77,6 +77,7 @@ export const login = passport.authenticate('login')
 export const logout = (req, res) => {
     req.session.destroy(() => {
         res.clearCookie('token');
+        res.clearCookie('Cart');
         res.redirect('/')
     })
 }

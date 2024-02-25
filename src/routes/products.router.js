@@ -12,8 +12,8 @@ router.get('/:pid', findProductById);
 
 router.post('/new', authValidation(["admin", "premium"]), newProduct);
 
-router.put('/update/:pid', ownerValidation(), authValidation("admin"), updateProduct);
+router.put('/update/:pid', ownerValidation(), authValidation(["admin", "premium"]), updateProduct);
 
-router.delete('/delete/:pid', ownerValidation(), authValidation("admin"), deleteProduct);
+router.post('/delete/:pid', ownerValidation(), authValidation(["admin", "premium"]), deleteProduct);
 
 export default router;
