@@ -19,7 +19,7 @@ export default class Manager {
     }
 
     async update(id, data){
-        return await this.model.findByIdAndUpdate(id, data);
+        return await this.model.findByIdAndUpdate(id, data, { new: true });
     };
 
     async delete(id){

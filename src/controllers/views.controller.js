@@ -14,7 +14,9 @@ import {
     findById as findByIdProd,
 } from "../services/products.service.js";
 
-
+import {
+    findByToken
+} from "../services/users.service.js";
 
 export async function isLogged(req, res) {
     const cookie = req.cookies["token"];
@@ -72,10 +74,13 @@ export const resetMessage = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
     try {
-        let ctx = { uid: req.query.uid }
+        let ctx = { uid: req.query.uid, token: req.query.token }
+        // Buscar si el token existe en la base de datos. Si no existe. No se renderiza más la vista.
+        const user = await findByToken(ctx.token);
+        if(!user) throw CustomError.createError(ErrorMessages.USER_NOT_FOUND, ErrorMessages.ISSUE_SESSION, 400)
         res.render("restore_password", ctx);
     } catch (error) {
-        if (error.status) res.status(error.status).send({ Type: error.name, Error: error.message })
+        if (error.status) return res.status(error.status).send({ Type: error.name, Error: error.message })
         res.status(500).send({ Type: error.name, Error: error.message })
     }
 };

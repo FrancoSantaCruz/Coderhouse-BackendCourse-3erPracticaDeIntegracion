@@ -23,6 +23,6 @@ export const ErrorMessages = {
     // General
     MISSING_DATA : "Missing data",
     PASSWORDS_UNMATCH : "The passwords do not match",
-    SAME_OLDPASS : "You cannot use your previous password."
-
+    SAME_OLDPASS : "You cannot use your previous password.",
+    TOKEN_EXPIRED : "Token expired. Request it again."
 }

@@ -34,6 +34,10 @@ const usersSchema = new mongoose.Schema({
         type: String,
         enum: ['user', 'admin', 'premium'],
         default: 'user',
+    },
+    restore_password: {
+        type: String,
+        default: "false"
     }
 })
 

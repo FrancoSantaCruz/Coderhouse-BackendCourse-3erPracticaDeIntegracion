@@ -9,11 +9,8 @@ export const ownerValidation = () => {
         try {
             const cookie = req.cookies["token"];
             const user = jwt.verify(cookie, config.jwt_secret);
-            // console.log(user);
             const { pid } = req.params;
-            // console.log(pid);
             const product = await findById(pid);
-            // console.log(product)
             if (!product) throw CustomError.createError(ErrorMessages.PRODUCT_NOT_FOUND, ErrorMessages.ISSUE_PRODUCT, 404);
 
             if (product.owner !== user.email && user.role !== "admin") {

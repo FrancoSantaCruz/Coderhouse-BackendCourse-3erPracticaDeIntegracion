@@ -16,6 +16,11 @@ export const findByEmail = async (email) => {
     return user;
 };
 
+export const findByToken = async (token) => {
+    const user = await usersDao.getByToken(token);
+    return user;
+};
+
 export const createOne = async (obj) => {
     const newUser = await usersDao.create(obj);
     return newUser
